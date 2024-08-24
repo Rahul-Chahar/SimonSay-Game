@@ -5,7 +5,7 @@ let btns = ["green", "red", "yellow", "purple"];
 
 let started = false;
 let level = 0;
-let highScore = localStorage.getItem("highScore") || 0; // Retrieve high score from localStorage
+let highScore = parseInt(localStorage.getItem("highScore")) || 0; // Retrieve high score from localStorage
 
 let h2 = document.querySelector("h2");
 let startBtn = document.getElementById("startBtn");
@@ -14,15 +14,35 @@ highScoreDisplay.innerText = `High Score: ${highScore}`;
 document.body.insertBefore(highScoreDisplay, startBtn); // Insert it into the DOM
 let bgMusic = document.getElementById("bgMusic");
 
+// Ensure the music starts from the beginning when the game starts
+function startMusic() {
+    bgMusic.play().catch(err => {
+        console.error("Error playing the music: ", err);
+    });
+}
+
+function stopMusic() {
+    bgMusic.pause(); // Stop the music when the game ends
+    bgMusic.currentTime = 0; // Reset the music to the start
+}
+
 // Start game on button click (for mobile) or keypress (for desktop)
 startBtn.addEventListener("click", startGame);
 document.addEventListener("keypress", startGame);
+
+// Ensure the music continues playing by handling the ended event
+bgMusic.addEventListener('ended', () => {
+    bgMusic.currentTime = 0; // Reset the playback position
+    bgMusic.play().catch(err => {
+        console.error("Error playing the music: ", err);
+    }); // Restart the music
+});
 
 function startGame() {
     if (!started) {
         started = true;
         levelUp();
-        bgMusic.play(); // Start the background music when the game starts
+        startMusic(); // Start the background music when the game starts
         startBtn.style.display = "none"; // Hide the start button when the game starts
     }
 }
@@ -71,8 +91,7 @@ function checkAns(idx) {
         setTimeout(function () {
             document.querySelector("body").style.backgroundColor = "white";
         }, 200);
-        bgMusic.pause(); // Stop the music when the game ends
-        bgMusic.currentTime = 0; // Reset the music to the start
+        stopMusic(); // Stop the music when the game ends
         reset();
         startBtn.style.display = "block"; // Show the start button again when the game is over
     }
@@ -97,4 +116,5 @@ function reset() {
     userSeq = [];
     started = false;
     level = 0;
+    startMusic(); // Restart the music when the game is reset
 }
