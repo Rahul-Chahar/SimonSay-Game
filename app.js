@@ -5,17 +5,27 @@ let btns = ["green", "red", "yellow", "purple"];
 
 let started = false;
 let level = 0;
+let highScore = localStorage.getItem("highScore") || 0; // Retrieve high score from localStorage
 
 let h2 = document.querySelector("h2");
-let bgMusic = document.getElementById("bgMusic"); // Get the audio element
+let startBtn = document.getElementById("startBtn");
+let highScoreDisplay = document.createElement("h3"); // Create an element to display the high score
+highScoreDisplay.innerText = `High Score: ${highScore}`;
+document.body.insertBefore(highScoreDisplay, startBtn); // Insert it into the DOM
+let bgMusic = document.getElementById("bgMusic");
 
-document.addEventListener("keypress", function () {
-    if (started == false) {
+// Start game on button click (for mobile) or keypress (for desktop)
+startBtn.addEventListener("click", startGame);
+document.addEventListener("keypress", startGame);
+
+function startGame() {
+    if (!started) {
         started = true;
         levelUp();
         bgMusic.play(); // Start the background music when the game starts
+        startBtn.style.display = "none"; // Hide the start button when the game starts
     }
-});
+}
 
 function gameFlash(btn) {
     btn.classList.add("flash");
@@ -48,7 +58,15 @@ function checkAns(idx) {
             setTimeout(levelUp, 1000);
         }
     } else {
-        h2.innerHTML = `Game Over! Your score was <b>${level}.</b> <br> Press any key to restart`;
+        h2.innerHTML = `Game Over! Your score was <b>${level}</b>.<br> Press Start to play again.`;
+
+        // Update high score if the current level is higher
+        if (level > highScore) {
+            highScore = level;
+            localStorage.setItem("highScore", highScore); // Save the new high score to localStorage
+            highScoreDisplay.innerText = `High Score: ${highScore}`; // Update the displayed high score
+        }
+
         document.querySelector("body").style.backgroundColor = "red";
         setTimeout(function () {
             document.querySelector("body").style.backgroundColor = "white";
@@ -56,6 +74,7 @@ function checkAns(idx) {
         bgMusic.pause(); // Stop the music when the game ends
         bgMusic.currentTime = 0; // Reset the music to the start
         reset();
+        startBtn.style.display = "block"; // Show the start button again when the game is over
     }
 }
 
@@ -69,7 +88,7 @@ function btnPress() {
 }
 
 let allBtns = document.querySelectorAll(".btn");
-for (btn of allBtns) {
+for (let btn of allBtns) {
     btn.addEventListener("click", btnPress);
 }
 
