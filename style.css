@@ -23,6 +23,22 @@ h2 {
     color: #fff;
 }
 
+#startBtn {
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    background-color: #ff9a9e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+#startBtn:hover {
+    background-color: #fecfef;
+}
+
 .btn-container {
     display: flex;
     flex-direction: column;
@@ -88,6 +104,11 @@ h2 {
         width: 120px;
         margin: 0.75rem;
     }
+
+    #startBtn {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -103,5 +124,10 @@ h2 {
         height: 100px;
         width: 100px;
         margin: 0.5rem;
+    }
+
+    #startBtn {
+        font-size: 1rem;
+        padding: 6px 12px;
     }
 }
